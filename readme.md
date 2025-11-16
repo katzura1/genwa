@@ -12,6 +12,7 @@ Aplikasi web untuk membuat dan mengkustomisasi tombol floating WhatsApp yang sia
 - [Fitur](#fitur)
 - [Preview](#preview)
 - [Cara Penggunaan](#cara-penggunaan)
+- [Copy WhatsApp Link Saja](#-copy-whatsapp-link-saja)
 - [Konfigurasi](#konfigurasi)
 - [Instalasi](#instalasi)
 - [Integrasi](#integrasi)
@@ -89,6 +90,51 @@ Klik tombol **"Copy"** untuk menyalin HTML code ke clipboard.
 ### 5. Paste ke Website
 
 Paste code di bagian akhir `<body>` website Anda sebelum `</body>`.
+
+## 🔗 Copy WhatsApp Link Saja
+
+Fitur bonus: Anda juga bisa hanya copy WhatsApp link tanpa tombol HTML.
+
+### Cara Copy Link WhatsApp
+
+1. **Atur nomor dan pesan:**
+
+   - Input nomor WhatsApp (format 62...)
+   - Tulis pesan custom (opsional)
+
+2. **Lihat format link di code output:**
+
+   ```
+   https://wa.me/62812345678?text=Halo+saya+ingin+konsultasi
+   ```
+
+3. **Gunakan link untuk:**
+   - QR Code generator
+   - Social media links (Instagram, Facebook, Twitter)
+   - Email signature
+   - Business card digital
+   - Landing page CTA button
+   - Dokumentasi atau handbook
+
+### Contoh Penggunaan Link
+
+**Untuk button HTML biasa:**
+
+```html
+<a href="https://wa.me/62812345678?text=Halo" class="btn-whatsapp">
+  Hubungi Kami via WhatsApp
+</a>
+```
+
+**Untuk QR Code:**
+Gunakan online QR Code generator dengan URL di atas untuk membuat QR Code yang bisa langsung buka chat WhatsApp.
+
+**Untuk Social Media:**
+
+```
+Instagram Bio: https://wa.me/62812345678
+Email Signature: https://wa.me/62812345678?text=Halo%20saya%20tertarik
+```
 
 ## ⚙️ Konfigurasi
 
