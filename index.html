@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WhatsApp Floating Button Generator</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f8f9fb;
+        margin: 0;
+        padding: 0;
+        color: #252525;
+      }
+      .container {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 16px rgba(44, 62, 80, 0.07);
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+      }
+      .preview-area {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        background: #e9ecef;
+        border-radius: 16px;
+        min-width: 270px;
+        height: 350px;
+        box-shadow: 0 2px 8px rgba(44, 62, 80, 0.05);
+        overflow: hidden;
+        flex: 0 0 300px;
+        margin-right: 32px;
+        margin-left: 0;
+      }
+      #wa-preview-btn {
+        position: absolute;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 3px 10px rgba(18, 140, 126, 0.22);
+        transition: filter 0.2s, box-shadow 0.2s;
+        animation: fade-in-btn 0.8s;
+      }
+      @keyframes fade-in-btn {
+        from {
+          opacity: 0;
+          transform: scale(0.7);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .wa-icon {
+        /* width: 28px; */
+        /* height: 28px; */
+        fill: #fff;
+        transition: fill 0.2s;
+      }
+
+      .controls {
+        flex: 1 1 0;
+        min-width: 240px;
+        display: flex;
+        flex-direction: column;
+      }
+      .controls h1 {
+        font-size: 1.5em;
+        margin-bottom: 18px;
+        color: #128c7e;
+      }
+      .form-row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .form-group-col {
+        flex: 1 1 200px;
+        min-width: 200px;
+        max-width: 320px;
+        display: flex;
+        flex-direction: column;
+      }
+      .form-group-col label {
+        margin: 12px 0 7px;
+        font-weight: 500;
+      }
+      .controls input[type="color"] {
+        vertical-align: middle;
+        margin-right: 5px;
+      }
+      .controls input,
+      .controls select,
+      .controls textarea {
+        padding: 7px 12px;
+        font-size: 1em;
+        border-radius: 7px;
+        border: 1px solid #d3d3d3;
+        margin-bottom: 12px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: border 0.2s;
+      }
+      .controls input:focus,
+      .controls select:focus,
+      .controls textarea:focus {
+        border: 1.5px solid #128c7e;
+        outline: none;
+      }
+
+      .slider-group {
+        margin-bottom: 12px;
+      }
+      .slider-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 3px;
+        margin-bottom: 5px;
+      }
+      .slider-value {
+        width: 38px;
+        text-align: right;
+        font-size: 0.96em;
+        color: #128c7e;
+        font-weight: 500;
+      }
+      input[type="range"] {
+        accent-color: #25d366;
+        width: 120px;
+        margin-right: 12px;
+      }
+
+      .gradient-fields {
+        margin-top: -12px;
+      }
+      .code-output-wrap {
+        margin-top: 20px;
+        position: relative;
+      }
+      .code-output {
+        width: 100%;
+        background: #f6f8fa;
+        border-radius: 7px;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+          monospace;
+        font-size: 0.95em;
+        padding: 12px;
+        color: #444;
+        border: 1px solid #d3d3d3;
+        white-space: pre-line;
+        word-break: break-all;
+        min-height: 50px;
+        user-select: text;
+        margin-top: 6px;
+      }
+      .copy-btn {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: #25d366;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 5px 14px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background 0.18s;
+        z-index: 2;
+      }
+      .copy-btn:active {
+        background: #128c7e;
+      }
+      .copied-indicator {
+        position: absolute;
+        right: 32px;
+        top: 11px;
+        color: #128c7e;
+        font-size: 0.94em;
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: none;
+      }
+      .copied-indicator.active {
+        opacity: 1;
+      }
+      @media (max-width: 900px) {
+        .container {
+          flex-direction: column;
+        }
+        .preview-area {
+          margin-left: 0;
+          margin-right: 0;
+          margin-bottom: 18px;
+        }
+        .controls {
+          max-width: 100%;
+        }
+      }
+      @media (max-width: 600px) {
+        .form-row {
+          flex-direction: column;
+          gap: 0;
+        }
+        .form-group-col {
+          max-width: 100%;
+        }
+        .container {
+          padding: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="preview-area">
+        <button id="wa-preview-btn" aria-label="Chat WhatsApp">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="wa-icon"
+            viewBox="0 0 16 16"
+            width="28"
+            height="28"
+          >
+            <path
+              d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"
+            />
+          </svg>
+        </button>
+      </div>
+      <form class="controls" autocomplete="off" onsubmit="return false;">
+        <h1>WhatsApp Floating Button Generator by KatzuraDev</h1>
+        <div class="form-row">
+          <div class="form-group-col">
+            <label>Nomor WhatsApp (62...):</label>
+            <input
+              type="text"
+              id="wa-number"
+              placeholder="Contoh: 62812345678"
+              pattern="\d+"
+              maxlength="16"
+            />
+
+            <label>Custom Pesan WhatsApp (optional):</label>
+            <textarea
+              id="wa-message"
+              rows="2"
+              maxlength="200"
+              placeholder="Tulis pesan yang mau dikirim otomatis..."
+            ></textarea>
+
+            <label>Ukuran tombol (px):</label>
+            <input
+              type="number"
+              id="wa-size"
+              value="60"
+              min="40"
+              max="100"
+              step="2"
+            />
+
+            <div class="slider-group">
+              <label>Posisi Bottom (px):</label>
+              <div class="slider-wrap">
+                <input
+                  type="range"
+                  id="wa-bottom-slider"
+                  min="0"
+                  max="100"
+                  value="24"
+                />
+                <span class="slider-value" id="wa-bottom-value">24</span>
+              </div>
+            </div>
+            <div class="slider-group">
+              <label>Posisi Right (px):</label>
+              <div class="slider-wrap">
+                <input
+                  type="range"
+                  id="wa-right-slider"
+                  min="0"
+                  max="100"
+                  value="24"
+                />
+                <span class="slider-value" id="wa-right-value">24</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group-col">
+            <label>Pilih Tipe Warna:</label>
+            <select id="color-type">
+              <option value="solid">Solid</option>
+              <option value="gradient">Gradient</option>
+            </select>
+            <label>Warna utama:</label>
+            <input type="color" id="main-color" value="#25d366" />
+            <div
+              id="gradient-fields"
+              class="gradient-fields"
+              style="display: none"
+            >
+              <label>Warna kedua (Gradient):</label>
+              <input type="color" id="second-color" value="#128C7E" />
+
+              <label>Arah Gradient:</label>
+              <select id="gradient-dir">
+                <option value="to right">Kanan</option>
+                <option value="to bottom">Bawah</option>
+                <option value="135deg">Diagonal</option>
+              </select>
+            </div>
+            <label>Shadow (bayangan):</label>
+            <select id="wa-shadow">
+              <option value="default">Default</option>
+              <option value="none">Tanpa bayangan</option>
+              <option value="soft">Lembut</option>
+              <option value="strong">Kuat</option>
+            </select>
+          </div>
+        </div>
+        <div class="code-output-wrap">
+          <label>Code (copy untuk integrasi):</label>
+          <button class="copy-btn" type="button" id="copyBtn">Copy</button>
+          <span id="copiedIndicator" class="copied-indicator">Copied!</span>
+          <div id="code" class="code-output"></div>
+        </div>
+      </form>
+    </div>
+    <script>
+      const waBtn = document.getElementById("wa-preview-btn");
+      const codeBlock = document.getElementById("code");
+      const waNumberInput = document.getElementById("wa-number");
+      const waMessageInput = document.getElementById("wa-message");
+      const colorType = document.getElementById("color-type");
+      const mainColor = document.getElementById("main-color");
+      const secondColor = document.getElementById("second-color");
+      const gradientDir = document.getElementById("gradient-dir");
+      const gradientFields = document.getElementById("gradient-fields");
+      const waSize = document.getElementById("wa-size");
+      const waBottomSlider = document.getElementById("wa-bottom-slider");
+      const waRightSlider = document.getElementById("wa-right-slider");
+      const waBottomValue = document.getElementById("wa-bottom-value");
+      const waRightValue = document.getElementById("wa-right-value");
+      const waShadow = document.getElementById("wa-shadow");
+      const copyBtn = document.getElementById("copyBtn");
+      const copiedIndicator = document.getElementById("copiedIndicator");
+
+      function urlEncode(str) {
+        return encodeURIComponent(str).replace(/%20/g, "+");
+      }
+      function updatePreview() {
+        // Button size, position (slider)
+        const sz = Number(waSize.value);
+        const bottom = Number(waBottomSlider.value);
+        const right = Number(waRightSlider.value);
+        waBottomValue.textContent = bottom;
+        waRightValue.textContent = right;
+
+        waBtn.style.width = waBtn.style.height = sz + "px";
+        waBtn.style.fontSize = sz * 0.45 + "px";
+        waBtn.style.bottom = bottom + "px";
+        waBtn.style.right = right + "px";
+        waBtn.style.position = "absolute";
+
+        // Color
+        if (colorType.value === "solid") {
+          waBtn.style.background = mainColor.value;
+        } else {
+          waBtn.style.background = `linear-gradient(${gradientDir.value}, ${mainColor.value}, ${secondColor.value})`;
+        }
+
+        // Shadow
+        switch (waShadow.value) {
+          case "none":
+            waBtn.style.boxShadow = "none";
+            break;
+          case "soft":
+            waBtn.style.boxShadow = "0 2px 8px rgba(18,140,126,0.12)";
+            break;
+          case "strong":
+            waBtn.style.boxShadow = "0 3px 12px rgba(18,140,126,0.38)";
+            break;
+          default:
+            waBtn.style.boxShadow = "0 3px 10px rgba(18,140,126,0.22)";
+        }
+        waBtn.style.border = "none";
+
+        // WhatsApp link
+        let waNo = waNumberInput.value.replace(/^(\+)?/, "");
+        let msg = waMessageInput.value.trim();
+        let link = `https://wa.me/${waNo}`;
+        if (msg.length > 0) {
+          link += `?text=${urlEncode(msg)}`;
+        }
+        if (waNo.length > 8 && /^62\d{7,14}$/.test(waNo)) {
+          waBtn.onclick = () => window.open(link, "_blank");
+          waBtn.style.opacity = "1";
+          waBtn.title = "Chat dengan WhatsApp";
+        } else {
+          waBtn.onclick = null;
+          waBtn.style.opacity = "0.78";
+          waBtn.title = "Nomor belum valid";
+        }
+
+        // Code output (copyable)
+        let waBtnStyle = `width:${sz}px;height:${sz}px;position:fixed;bottom:${bottom}px;right:${right}px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:none;z-index:9999;`;
+        if (colorType.value === "solid")
+          waBtnStyle += `background:${mainColor.value};`;
+        else
+          waBtnStyle += `background:linear-gradient(${gradientDir.value},${mainColor.value},${secondColor.value});`;
+        switch (waShadow.value) {
+          case "none":
+            waBtnStyle += "box-shadow:none;";
+            break;
+          case "soft":
+            waBtnStyle += "box-shadow:0 2px 8px rgba(18,140,126,0.12);";
+            break;
+          case "strong":
+            waBtnStyle += "box-shadow:0 3px 12px rgba(18,140,126,0.38);";
+            break;
+          default:
+            waBtnStyle += "box-shadow:0 3px 10px rgba(18,140,126,0.22);";
+        }
+        let svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="${
+          (sz * 0.47) | 0
+        }" height="${
+          (sz * 0.47) | 0
+        }"><path fill="#fff" d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"
+            /></svg>`;
+        // Button html
+        let waNoHref =
+          waNo.length > 8 && /^62\d{7,14}$/.test(waNo) ? waNo : "62xxxxxxx";
+        let fullLink = `https://wa.me/${waNoHref}`;
+        if (msg.length > 0) fullLink += `?text=${urlEncode(msg)}`;
+        let btnHtml = `<button style="${waBtnStyle}" onclick="window.open('${fullLink}','_blank')" aria-label="Chat WhatsApp">${svgIcon}</button>`;
+        codeBlock.innerText = btnHtml;
+      }
+      colorType.onchange = function () {
+        gradientFields.style.display =
+          colorType.value === "gradient" ? "block" : "none";
+        updatePreview();
+      };
+      [
+        waNumberInput,
+        waMessageInput,
+        colorType,
+        mainColor,
+        secondColor,
+        gradientDir,
+        waSize,
+        waShadow,
+        waBottomSlider,
+        waRightSlider,
+      ].forEach((ctl) => {
+        ctl.addEventListener("input", updatePreview);
+        ctl.addEventListener("change", updatePreview);
+      });
+      updatePreview();
+
+      // Copy to clipboard logic
+      copyBtn.onclick = function () {
+        let codeText = codeBlock.innerText;
+        // Use clipboard API if available
+        if (navigator.clipboard) {
+          navigator.clipboard
+            .writeText(codeText)
+            .then(() => showCopyIndicator());
+        } else {
+          // Fallback for older browsers
+          let textarea = document.createElement("textarea");
+          textarea.value = codeText;
+          document.body.appendChild(textarea);
+          textarea.select();
+          try {
+            document.execCommand("copy");
+            showCopyIndicator();
+          } catch (e) {}
+          document.body.removeChild(textarea);
+        }
+      };
+      function showCopyIndicator() {
+        copiedIndicator.classList.add("active");
+        setTimeout(() => copiedIndicator.classList.remove("active"), 1300);
+      }
+    </script>
+  </body>
+</html>
